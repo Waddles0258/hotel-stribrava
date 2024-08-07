@@ -1,4 +1,72 @@
+import dayjs from 'dayjs';
+import { useState } from 'react';
 export const Order = ({choosenRoom}) =>{
+
+    const [fromDate, setFromDate] = useState()
+    const [toDate, setToDate] = useState()
+    const [countPeople, setCountPeople] = useState()
+    const [food, setFood] = useState()
+    const [pet, setPet] = useState()
+    const [child, setChild] = useState()
+    const [wheelchair, setWheelchair] = useState()
+    const [email, setEmail] = useState()
+    const [telephone, setTelephone] = useState()
+    const [atAll, setAtAll] = useState()
+
+    const changeFrom = () =>{
+        setFromDate(event.target.value)
+    }
+
+    const changeTo = () =>{
+        setToDate(event.target.value)
+    }
+
+    const changeCount = () =>{
+        setCountPeople(event.target.value)
+    }
+
+    const changeFood = () =>{
+        setFood(event.target.value)
+    }
+
+    const changePet = () =>{
+        setPet(event.target.value)
+    }
+
+    const changeChild = () =>{
+        setChild(event.target.value)
+    }
+
+    const changeWheelchair = () =>{
+        setWheelchair(event.target.value)
+    }
+
+    const changeEmail = () =>{
+        setEmail(event.target.value)
+    }
+
+    const changeTelephone = () =>{
+        setTelephone(event.target.value)
+    }
+
+    const handleClick = () =>{
+        event.preventDefault()
+        console.log(fromDate + " " + toDate + " " + countPeople + " " + food + " " + pet + " " + child + " " + wheelchair + " " + email + " " + telephone)
+        const date1 = dayjs(fromDate)
+        const date2 = dayjs(toDate)
+        const diffInDays = Math.abs(date1.diff(date2, 'day'));
+        const roomCost = choosenRoom.cost * diffInDays * countPeople
+        let foodPrice = 0
+        if (food === 'Žadné') foodPrice = 0
+        else if (food === 'Snídaně') foodPrice = 100
+        else if (food === 'Polopenze') foodPrice = 200
+        else foodPrice = 300
+        const foodCost = foodPrice * countPeople * diffInDays
+        const childCost = roomCost/2
+        const petCost = roomCost/4
+        setAtAll(roomCost + foodCost + childCost + petCost)
+    }
+
     return(
         <>
             <section class="light">
@@ -11,42 +79,42 @@ export const Order = ({choosenRoom}) =>{
                         {choosenRoom.text}
                     </p>
                     </div>
-                    <form>
+                    <form onSubmit={handleClick}>
                     <div class="form-fields">
                         <label htmlFor="field1" class="field-label">Od:</label>
-                        <input id="field1" class="field-input" type="date" />
+                        <input onChange={changeFrom} id="field1" class="field-input" type="date" />
 
-                        <label htmlFor="field1" class="field-label">Do:</label>
-                        <input id="field1" class="field-input" type="date" />
+                        <label htmlFor="field2" class="field-label">Do:</label>
+                        <input onChange={changeTo} id="field1" class="field-input" type="date" />
 
-                        <label htmlFor="field1" class="field-label">Počet osob:</label>
-                        <input id="field1" class="field-input" type="number" />
+                        <label htmlFor="field3" class="field-label">Počet osob:</label>
+                        <input onChange={changeCount} id="field1" class="field-input" type="number" />
                         
                         <label htmlFor="select" class="field-label">Stravování:</label>
-                        <select id="select" class="field-input">
-                        <option>Option 1</option>
-                        <option>Option 2</option>
-                        <option>Option 3</option>
-                        <option>Option 4</option>
+                        <select onChange={changeFood} id="select" class="field-input">
+                        <option>Žadné</option>
+                        <option>Snídaně</option>
+                        <option>Polopenze</option>
+                        <option>Plná penze</option>
                         </select>
 
                         <label htmlFor="check1" class="field-label"> Domácí mazlíček:</label>
-                        <input id="check1" class="field-input" type="checkbox" />
+                        <input onChange={changePet} id="check1" class="field-input" type="checkbox" />
 
-                        <label htmlFor="check1" class="field-label">Přistýlka pro dítě:</label>
-                        <input id="check1" class="field-input" type="checkbox" />
+                        <label htmlFor="check2" class="field-label">Přistýlka pro dítě:</label>
+                        <input onChange={changeChild} id="check2" class="field-input" type="checkbox" />
 
-                        <label htmlFor="check1" class="field-label">Bezbariérový přístup:</label>
-                        <input id="check1" class="field-input" type="checkbox" />
+                        <label htmlFor="check3" class="field-label">Bezbariérový přístup:</label>
+                        <input onChange={changeWheelchair} id="check3" class="field-input" type="checkbox" />
 
-                        <label htmlFor="check1" class="field-label">E-mail:</label>
-                        <input id="check1" class="field-input" type="email" />
+                        <label htmlFor="check4" class="field-label">E-mail:</label>
+                        <input onChange={changeEmail} id="check4" class="field-input" type="email" />
 
-                        <label htmlFor="check1" class="field-label">Telefon:</label>
-                        <input id="check1" class="field-input" type="tel" />
+                        <label htmlFor="check5" class="field-label">Telefon:</label>
+                        <input onChange={changeTelephone} id="check5" class="field-input" type="tel" />
                     </div>
-                    <p class="cost">Celková cena za pobyt: 1000 Kč</p>
-                    <button class="wide">Odeslat poptávku</button>
+                    <p class="cost">Celková cena za pobyt: {atAll} Kč</p>
+                    <button type='submit' class="wide">Odeslat poptávku</button>
                     </form>
                 </div>
                 </div>
