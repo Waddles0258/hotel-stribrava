@@ -1,10 +1,10 @@
-export const Room = () =>{
+export const Room = ({type, cost, text, img}) =>{
     return(
         <>
             <div class="card">
-                <img class="card__image" src="/img/pokoj01.jpg" />
-                <div class="card__title">Úkryt</div>
-                <div class="card__body">450 kč na osobu</div>
+                <img class="card__image" src={`http://localhost:4000${img}`} />
+                <div class="card__title">{type}</div>
+                <div class="card__body">{cost} kč na osobu</div>
             </div>
         </>
     )

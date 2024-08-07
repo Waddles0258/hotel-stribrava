@@ -4,4 +4,4 @@ import './global.css';
 
 createRoot(
   document.querySelector('#app'),
-).render(<HomePage />);
+).render(<HomePage/>);
