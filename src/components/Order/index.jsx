@@ -1,14 +1,14 @@
-export const Order = () =>{
+export const Order = ({choosenRoom}) =>{
     return(
         <>
             <section class="light">
                 <div class="container">
-                <h2>Pokoj Úkryt, 450 kč na osobu</h2>
+                <h2>{choosenRoom.type}, {choosenRoom.cost} kč na osobu</h2>
                 <div class="columns-2">
                     <div class="column">
-                    <img src="/img/pokoj01.jpg" />
+                    <img src={`http://localhost:4000${choosenRoom.img}`} />
                     <p>
-                        Strohý avšak pohodlný pokoj ideální pro hosty, kteří chtějí maximálně ušetřit a hledají cenově dostupné ubytování bez ztráty základního komfortu. Vhodné pro všechny, kdo chtějí v našem hotelu rychle přečkat nepřízeň počasí a vydat se rychle zase na cestu ať už pěší nebo po řece.
+                        {choosenRoom.text}
                     </p>
                     </div>
                     <form>

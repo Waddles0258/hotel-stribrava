@@ -1,15 +1,19 @@
 import { Room } from "../Room";
 import React, { useState, useEffect } from 'react';
 
-export const Rooms = () => {
+export const Rooms = ({onVote}) => {
     const [infoRooms, setInfoRooms] = useState(null);
 
     const callApi = async () => {
         const response = await fetch('http://localhost:4000/api/rooms');
         const data = await response.json();
-        setInfoRooms(data.data);
-        console.log(data.data); // Логируем полученные данные
+        setInfoRooms(data.data); // Логируем полученные данные
     };
+
+    const handleClick = () =>{
+        console.log(' jkfdhkjlf'+element)
+        onVote({ type: element.type, cost: element.cost, text: element.text, img: element.img })
+    }
 
     useEffect(() => {
         callApi();
@@ -25,7 +29,10 @@ export const Rooms = () => {
                     </p>
                     <div className="cards-row">
                         {infoRooms && infoRooms.map((element) => (
-                            <Room 
+                            <Room               
+                            onClick={() => {
+                                onVote({ type: element.type, cost: element.cost, text: element.text, img: element.img });
+                              }}
                                 key={element.id} 
                                 type={element.type} 
                                 cost={element.cost} 
