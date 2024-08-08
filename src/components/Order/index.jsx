@@ -11,7 +11,7 @@ export const Order = ({choosenRoom}) =>{
     const [wheelchair, setWheelchair] = useState()
     const [email, setEmail] = useState()
     const [telephone, setTelephone] = useState()
-    const [atAll, setAtAll] = useState()
+    const [atAll, setAtAll] = useState(0)
 
     const changeFrom = () =>{
         setFromDate(event.target.value)
@@ -67,6 +67,28 @@ export const Order = ({choosenRoom}) =>{
         setAtAll(roomCost + foodCost + childCost + petCost)
     }
 
+    const sendInfo = () =>{
+        event.preventDefault()
+        fetch('http://localhost:4000/api/order', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fromDate: fromDate,
+              toDate: toDate,
+              countPeople: countPeople,
+              food: food,
+              pet: pet,
+              child: child,
+              wheelchair: wheelchair,
+              email: email,
+              telephone: telephone,
+              atAll: atAll
+            }),
+          });
+    }
+
     return(
         <>
             <section class="light">
@@ -114,7 +136,8 @@ export const Order = ({choosenRoom}) =>{
                         <input onChange={changeTelephone} id="check5" class="field-input" type="tel" />
                     </div>
                     <p class="cost">Celková cena za pobyt: {atAll} Kč</p>
-                    <button type='submit' class="wide">Odeslat poptávku</button>
+                    <button type='submit' class="wide">Podívat se na cenu</button>
+                    <button onClick={sendInfo} class="wide">Odeslat poptavku</button>
                     </form>
                 </div>
                 </div>
