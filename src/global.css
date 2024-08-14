@@ -176,6 +176,10 @@ img {
   justify-self: right;
 }
 
+form .form-fields .border--red{
+  border: 1px solid red;
+}
+
 input[type="text"],
 input[type="number"],
 input[type="date"],
@@ -197,6 +201,10 @@ input[type="checkbox"] {
   text-align: right;
   font-weight: bold;
 }
+.wide--grey:hover {
+  background-color: grey;
+  cursor: pointer;
+}
 
 button {
   font-size: 1rem;
@@ -217,4 +225,32 @@ button.wide {
   width: 100%;
   padding: 1rem;
   margin-bottom: 10px;
+}
+
+.hidden{
+  display: none;
+}
+.result{
+  width: 600px;
+  margin: 0 auto;
+  font-size: 1.5em;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+.result span{
+  font-weight: bold;
+}
+
+.result h2{
+  text-align: center;
+  font-size: 2em;
+}
+
+.mistake{
+  text-align: right;
+  color:red;
+}
+
+.wide--grey{
+  background-color:grey;
 }

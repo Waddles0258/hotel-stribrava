@@ -2,16 +2,21 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 export const Order = ({choosenRoom}) =>{
 
-    const [fromDate, setFromDate] = useState()
-    const [toDate, setToDate] = useState()
-    const [countPeople, setCountPeople] = useState()
-    const [food, setFood] = useState()
+    const [fromDate, setFromDate] = useState(null)
+    const [toDate, setToDate] = useState(null)
+    const [countPeople, setCountPeople] = useState(0)
+    const [food, setFood] = useState('Žadné')
     const [pet, setPet] = useState()
     const [child, setChild] = useState()
     const [wheelchair, setWheelchair] = useState()
-    const [email, setEmail] = useState()
-    const [telephone, setTelephone] = useState()
+    const [email, setEmail] = useState('')
+    const [telephone, setTelephone] = useState('')
     const [atAll, setAtAll] = useState(0)
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    const [buttonClass, setButtonClass] = useState('wide wide--grey');
+    const [inputDateClass, setInputDateClass] = useState('field-input');
+    const [inputCountClass, setInputCountClass] = useState('field-input');
+    const [inputInfoClass, setInputInfoClass] = useState('field-input');
 
     const changeFrom = () =>{
         setFromDate(event.target.value)
@@ -51,20 +56,43 @@ export const Order = ({choosenRoom}) =>{
 
     const handleClick = () =>{
         event.preventDefault()
-        console.log(fromDate + " " + toDate + " " + countPeople + " " + food + " " + pet + " " + child + " " + wheelchair + " " + email + " " + telephone)
         const date1 = dayjs(fromDate)
         const date2 = dayjs(toDate)
-        const diffInDays = Math.abs(date1.diff(date2, 'day'));
-        const roomCost = choosenRoom.cost * diffInDays * countPeople
-        let foodPrice = 0
-        if (food === 'Žadné') foodPrice = 0
-        else if (food === 'Snídaně') foodPrice = 100
-        else if (food === 'Polopenze') foodPrice = 200
-        else foodPrice = 300
-        const foodCost = foodPrice * countPeople * diffInDays
-        const childCost = roomCost/2
-        const petCost = roomCost/4
-        setAtAll(roomCost + foodCost + childCost + petCost)
+        const diffInDays = date2.diff(date1, 'day');
+        if(fromDate === null || toDate === null){
+            document.querySelector('.mistake').textContent = "Zadejte datum příjezdu a odjezdu."
+            setInputDateClass('field-input border--red')
+        }else if(diffInDays <=0){
+            document.querySelector('.mistake').textContent = "Datum odjezdu nemůže být dříve než datum příjezdu."
+            console.log(diffInDays)
+            setInputDateClass('field-input border--red')
+        }else if(countPeople <= 0){
+            document.querySelector('.mistake').textContent = "Zadejte správný počet lidí."
+            setInputDateClass('field-input')
+            setInputCountClass('field-input border--red')
+        }else if(telephone === '' || email === ''){
+            document.querySelector('.mistake').textContent = "Zadejte osobní údaje."
+            setInputDateClass('field-input')
+            setInputCountClass('field-input')
+            setInputInfoClass('field-input border--red')
+        }else{
+            const roomCost = choosenRoom.cost * diffInDays * countPeople
+            let foodPrice = 0
+            if (food === 'Plná penze') foodPrice = 300
+            else if (food === 'Snídaně') foodPrice = 100
+            else if (food === 'Polopenze') foodPrice = 200
+            else foodPrice = 0
+            const foodCost = foodPrice * countPeople * diffInDays
+            const childCost = roomCost/2
+            const petCost = roomCost/4
+            setAtAll(roomCost + foodCost + childCost + petCost)
+            setIsButtonDisabled(false);
+            setButtonClass('wide')
+            setInputDateClass('field-input')
+            setInputCountClass('field-input')
+            setInputInfoClass('field-input')
+            document.querySelector('.mistake').textContent = ""
+        }
     }
 
     const sendInfo = () =>{
@@ -75,6 +103,7 @@ export const Order = ({choosenRoom}) =>{
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+              room: choosenRoom.type,
               fromDate: fromDate,
               toDate: toDate,
               countPeople: countPeople,
@@ -86,7 +115,12 @@ export const Order = ({choosenRoom}) =>{
               telephone: telephone,
               atAll: atAll
             }),
-          });
+        });
+        document.querySelector('.light').classList.add('hidden')
+        document.querySelector('.second').classList.remove('hidden')
+    }
+    const restart = () =>{
+        location.reload()
     }
 
     return(
@@ -104,17 +138,17 @@ export const Order = ({choosenRoom}) =>{
                     <form onSubmit={handleClick}>
                     <div class="form-fields">
                         <label htmlFor="field1" class="field-label">Od:</label>
-                        <input onChange={changeFrom} id="field1" class="field-input" type="date" />
+                        <input onChange={changeFrom} id="field1" class={inputDateClass} type="date" />
 
                         <label htmlFor="field2" class="field-label">Do:</label>
-                        <input onChange={changeTo} id="field1" class="field-input" type="date" />
+                        <input onChange={changeTo} id="field2" class={inputDateClass} type="date" />
 
                         <label htmlFor="field3" class="field-label">Počet osob:</label>
-                        <input onChange={changeCount} id="field1" class="field-input" type="number" />
+                        <input onChange={changeCount} id="field3" class={inputCountClass} type="number" />
                         
                         <label htmlFor="select" class="field-label">Stravování:</label>
                         <select onChange={changeFood} id="select" class="field-input">
-                        <option>Žadné</option>
+                        <option selected>Žadné</option>
                         <option>Snídaně</option>
                         <option>Polopenze</option>
                         <option>Plná penze</option>
@@ -130,17 +164,32 @@ export const Order = ({choosenRoom}) =>{
                         <input onChange={changeWheelchair} id="check3" class="field-input" type="checkbox" />
 
                         <label htmlFor="check4" class="field-label">E-mail:</label>
-                        <input onChange={changeEmail} id="check4" class="field-input" type="email" />
+                        <input onChange={changeEmail} id="check4" class={inputInfoClass} type="email" />
 
                         <label htmlFor="check5" class="field-label">Telefon:</label>
-                        <input onChange={changeTelephone} id="check5" class="field-input" type="tel" />
+                        <input onChange={changeTelephone} id="check5" class={inputInfoClass} type="tel" />
                     </div>
                     <p class="cost">Celková cena za pobyt: {atAll} Kč</p>
+                    <p className="mistake"></p>
                     <button type='submit' class="wide">Podívat se na cenu</button>
-                    <button onClick={sendInfo} class="wide">Odeslat poptavku</button>
+                    <button onClick={sendInfo} class={buttonClass} disabled={isButtonDisabled}>Odeslat poptavku</button>
                     </form>
                 </div>
                 </div>
+            </section>
+            <section className="light second hidden">
+            <div className="result">
+                <h2>Vaše objednávka:</h2>
+                <p><span>Typ pokoje:</span>  {choosenRoom.type}<br></br>
+                <span>Od:</span> {fromDate}<br></br>
+                <span>Do:</span> {toDate}<br></br>
+                <span>Počet osob:</span> {countPeople}<br></br>
+                <span>Stravování:</span> {food}<br></br>
+                <span>Celková cena za pobyt:</span> {atAll} Kč<br></br>
+                   Děkujeme, že jste si rezervovali pokoj v našem hotelu. Brzy vás bude kontaktovat manažer.
+                </p>
+                <button onClick={restart} class="wide">Vrátit se na rezervační formulář</button>
+            </div>
             </section>
         </>
     )
